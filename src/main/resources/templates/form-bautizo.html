@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Certificado de Bautizo</title>
+    </head>
+<body>
+
+    <h2>Registrar Nuevo Bautizo</h2>
+
+    <form th:action="@{/bautizo/guardar}" th:object="${bautizo}" method="post">
+        
+        <div>
+            <label>Nombre del Bautizado:</label>
+            <input type="text" th:field="*{nombreBautizado}" />
+        </div>
+        <div>
+            <label>Apellido del Bautizado:</label>
+            <input type="text" th:field="*{apellidoBautizado}" />
+        </div>
+        <div>
+            <label>Nombre del Padre:</label>
+            <input type="text" th:field="*{nombrePadre}" />
+        </div>
+        <div>
+            <label>Nombre de la Madre:</label>
+            <input type="text" th:field="*{nombreMadre}" />
+        </div>
+        <div>
+            <label>Nombre del Padrino:</label>
+            <input type="text" th:field="*{nombrePadrino}" />
+        </div>
+        <div>
+            <label>Nombre de la Madrina:</label>
+            <input type="text" th:field="*{nombreMadrina}" />
+        </div>
+        
+        <br/>
+        <button type="submit">Guardar Registro</button>
+
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Certificados</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        input, button { padding: 8px; margin-right: 5px; }
+        #form-bautizo { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 20px; }
+        .acciones button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>Gestión de Certificados de Bautizo</h1>
+
+    <div id="form-bautizo">
+        <h3 id="form-titulo">Registrar Nuevo Bautizo</h3>
+        <input type="hidden" id="bautizo-id">
+        
+        <input type="text" id="nombreBautizado" placeholder="Nombre Bautizado">
+        <input type="text" id="apellidoBautizado" placeholder="Apellido Bautizado">
+        <br><br>
+        <input type="text" id="nombrePadre" placeholder="Nombre Padre">
+        <input type="text" id="nombreMadre" placeholder="Nombre Madre">
+        <br><br>
+        <input type="text" id="nombrePadrino" placeholder="Nombre Padrino">
+        <input type="text" id="nombreMadrina" placeholder="Nombre Madrina">
+        <br><br>
+        
+        <button onclick="guardarBautizo()">Guardar</button>
+        <button onclick="limpiarFormulario()" style="display:none;" id="btn-cancelar">Cancelar Edición</button>
+    </div>
+
+    <h2>Lista de Registros</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre Completo</th>
+                <th>Padre</th>
+                <th>Madre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-bautizos-body">
+            </tbody>
+    </table>
+
+    <script>
+        
+        // URL base de tu API que creaste en Spring Boot
+        const API_URL = 'http://localhost:8080/api/bautizos';
+
+        // --- R: READ (LEER) ---
+        // Esta función se llama tan pronto como se carga la página
+        window.onload = function() {
+            cargarBautizos();
+        };
+
+        // Función para obtener todos los bautizos de la API
+        async function cargarBautizos() {
+            try {
+                const response = await fetch(API_URL);
+                const bautizos = await response.json();
+                
+                const tbody = document.getElementById('tabla-bautizos-body');
+                tbody.innerHTML = ''; // Limpiamos la tabla antes de llenarla
+
+                // Recorremos cada bautizo y creamos una fila en la tabla
+                bautizos.forEach(bautizo => {
+                    const fila = `
+                        <tr>
+                            <td>${bautizo.id}</td>
+                            <td>${bautizo.nombreBautizado} ${bautizo.apellidoBautizado}</td>
+                            <td>${bautizo.nombrePadre}</td>
+                            <td>${bautizo.nombreMadre}</td>
+                            <td class="acciones">
+                                <button onclick="cargarDatosParaEditar(${bautizo.id})">Editar</button>
+                                <button onclick="eliminarBautizo(${bautizo.id})">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += fila;
+                });
+            } catch (error) {
+                console.error('Error al cargar bautizos:', error);
+            }
+        }
+
+        // --- C: CREATE (CREAR) y U: UPDATE (ACTUALIZAR) ---
+        async function guardarBautizo() {
+            const id = document.getElementById('bautizo-id').value;
+            
+            // Creamos el objeto con los datos del formulario
+            const datos = {
+                nombreBautizado: document.getElementById('nombreBautizado').value,
+                apellidoBautizado: document.getElementById('apellidoBautizado').value,
+                nombrePadre: document.getElementById('nombrePadre').value,
+                nombreMadre: document.getElementById('nombreMadre').value,
+                nombrePadrino: document.getElementById('nombrePadrino').value,
+                nombreMadrina: document.getElementById('nombreMadrina').value
+            };
+
+            try {
+                let url = API_URL;
+                let metodo = 'POST'; // Por defecto, creamos (CREATE)
+
+                // Si hay un ID, significa que estamos actualizando (UPDATE)
+                if (id) {
+                    url = `${API_URL}/${id}`;
+                    metodo = 'PUT';
+                }
+
+                // Usamos 'fetch' para llamar a nuestra API
+                const response = await fetch(url, {
+                    method: metodo,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datos) // Convertimos los datos a JSON
+                });
+
+                if (response.ok) {
+                    limpiarFormulario();
+                    cargarBautizos(); // Recargamos la tabla
+                } else {
+                    console.error('Error al guardar:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error en la conexión:', error);
+            }
+        }
+
+        // --- U: UPDATE (Paso 1: Cargar datos en el formulario) ---
+        async function cargarDatosParaEditar(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                const bautizo = await response.json();
+
+                // Llenamos el formulario con los datos del bautizo
+                document.getElementById('bautizo-id').value = bautizo.id;
+                document.getElementById('nombreBautizado').value = bautizo.nombreBautizado;
+                document.getElementById('apellidoBautizado').value = bautizo.apellidoBautizado;
+                document.getElementById('nombrePadre').value = bautizo.nombrePadre;
+                document.getElementById('nombreMadre').value = bautizo.nombreMadre;
+                document.getElementById('nombrePadrino').value = bautizo.nombrePadrino;
+                document.getElementById('nombreMadrina').value = bautizo.nombreMadrina;
+
+                // Cambiamos la UI para modo "Edición"
+                document.getElementById('form-titulo').innerText = `Editando Bautizo ID: ${bautizo.id}`;
+                document.getElementById('btn-cancelar').style.display = 'inline';
+
+            } catch (error) {
+                console.error('Error al cargar datos para editar:', error);
+            }
+        }
+
+
+        // --- D: DELETE (ELIMINAR) ---
+        async function eliminarBautizo(id) {
+            // Confirmación simple
+            if (!confirm(`¿Estás seguro de que quieres eliminar el registro ID: ${id}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    cargarBautizos(); // Recargamos la tabla
+                } else {
+                    console.error('Error al eliminar:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error en la conexión:', error);
+            }
+        }
+
+        // --- Función Auxiliar para limpiar ---
+        function limpiarFormulario() {
+            document.getElementById('bautizo-id').value = '';
+            document.getElementById('nombreBautizado').value = '';
+            document.getElementById('apellidoBautizado').value = '';
+            document.getElementById('nombrePadre').value = '';
+            document.getElementById('nombreMadre').value = '';
+            document.getElementById('nombrePadrino').value = '';
+            document.getElementById('nombreMadrina').value = '';
+
+            document.getElementById('form-titulo').innerText = 'Registrar Nuevo Bautizo';
+            document.getElementById('btn-cancelar').style.display = 'none';
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Bautizos</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <h2>Lista de Registros de Bautizo</h2>
+
+    <p>
+        <a href="/bautizo/nuevo">Registrar Nuevo Bautizo</a>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre Completo</th>
+                <th>Padre</th>
+                <th>Madre</th>
+                <th>Padrino</th>
+                <th>Madrina</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="bautizo : ${bautizos}">
+                <td th:text="${bautizo.id}"></td>
+                <td th:text="${bautizo.nombreBautizado + ' ' + bautizo.apellidoBautizado}"></td>
+                <td th:text="${bautizo.nombrePadre}"></td>
+                <td th:text="${bautizo.nombreMadre}"></td>
+                <td th:text="${bautizo.nombrePadrino}"></td>
+                <td th:text="${bautizo.nombreMadrina}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
