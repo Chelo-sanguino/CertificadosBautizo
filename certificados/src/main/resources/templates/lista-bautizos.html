@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Certificados de Bautizo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <h2 class="mb-4 text-primary">Registro de Certificados de Bautizo</h2>
+        
+        <a href="/bautizo/nuevo" class="btn btn-success mb-4">
+            <i class="bi bi-plus-circle"></i> Registrar Nuevo Bautizo
+        </a>
+        
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Bautizado</th>
+                        <th>Fecha Bautizo</th>
+                        <th>Padres</th>
+                        <th>Padrinos</th>
+                        <th>Libro / Folio</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="bautizo : ${bautizos}">
+                        <td th:text="${bautizo.id}">1</td>
+                        <td th:text="${bautizo.nombreBautizado} + ' ' + ${bautizo.apellidoBautizado}">Nombre Apellido</td>
+                        <td th:text="${bautizo.fechaBautizo}">2023-11-24</td>
+                        <td>
+                            <span th:text="${bautizo.nombrePadre}">Padre</span> y 
+                            <span th:text="${bautizo.nombreMadre}">Madre</span>
+                        </td>
+                        <td>
+                            <span th:text="${bautizo.nombrePadrino}">Padrino</span> y 
+                            <span th:text="${bautizo.nombreMadrina}">Madrina</span>
+                        </td>
+                        <td>
+                            <span th:text="${bautizo.libro}">L1</span> / 
+                            <span th:text="${bautizo.folio}">F2</span>
+                        </td>
+                        <td class="text-center">
+                            <a th:href="@{/bautizo/{id}/pdf(id=${bautizo.id})}" class="btn btn-danger btn-sm me-2" title="Descargar PDF">
+                                <i class="bi bi-file-pdf"></i> PDF
+                            </a>
+                            <a th:href="@{/bautizo/editar/{id}(id=${bautizo.id})}" class="btn btn-warning btn-sm" title="Editar Registro">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+
+</body>
+</html>
