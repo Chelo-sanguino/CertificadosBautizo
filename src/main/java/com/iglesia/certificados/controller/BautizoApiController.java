@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 import com.iglesia.certificados.model.Bautizo;
 import com.iglesia.certificados.repository.BautizoRepository;
+import com.iglesia.certificados.service.PdfService;
 
 
 
@@ -31,6 +34,29 @@ public class BautizoApiController {
 
     @Autowired
     private BautizoRepository bautizoRepository;
+
+    @Autowired
+    private PdfService pdfService;
+
+        // --- NUEVO: Descargar PDF ---
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> descargarPdf(@PathVariable Long id) {
+        Optional<Bautizo> bautizoOptional = bautizoRepository.findById(id);
+        
+        if (bautizoOptional.isPresent()) {
+            Bautizo bautizo = bautizoOptional.get();
+            byte[] pdfBytes = pdfService.generarCertificadoBautizo(bautizo);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", 
+                "Certificado_Bautizo_" + bautizo.getNombreBautizado() + "_" + bautizo.getApellidoBautizado() + ".pdf");
+            
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     // --- C - CREATE (Crear) ---
     // Escucha en: POST /api/bautizos
