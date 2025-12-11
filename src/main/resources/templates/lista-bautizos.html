@@ -3,42 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Bautizos</title>
-    <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body>
+<body class="bg-light">
 
-    <h2>Lista de Registros de Bautizo</h2>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-primary">Gestión de Certificados</h2>
+        
+        <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${exito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
-    <p>
-        <a href="/bautizo/nuevo">Registrar Nuevo Bautizo</a>
-    </p>
-
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre Completo</th>
-                <th>Padre</th>
-                <th>Madre</th>
-                <th>Padrino</th>
-                <th>Madrina</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="bautizo : ${bautizos}">
-                <td th:text="${bautizo.id}"></td>
-                <td th:text="${bautizo.nombreBautizado + ' ' + bautizo.apellidoBautizado}"></td>
-                <td th:text="${bautizo.nombrePadre}"></td>
-                <td th:text="${bautizo.nombreMadre}"></td>
-                <td th:text="${bautizo.nombrePadrino}"></td>
-                <td th:text="${bautizo.nombreMadrina}"></td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-4">
+                <a href="/bautizo/nuevo" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Nuevo Bautizo
+                </a>
+            </div>
+            
+            <div class="col-md-8">
+                <form th:action="@{/bautizos}" method="get" class="d-flex">
+                    <input type="text" name="palabraClave" class="form-control me-2" 
+                           placeholder="Buscar por nombre o apellido..." th:value="${palabraClave}">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                    <a href="/bautizos" class="btn btn-outline-secondary ms-1">Limpiar</a>
+                </form>
+            </div>
+        </div>
+        
+        <div class="table-responsive shadow-sm bg-white rounded">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Bautizado</th>
+                        <th>Fecha Bautizo</th>
+                        <th>Padres</th>
+                        <th>Registro</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="bautizo : ${bautizos}">
+                        <td th:text="${bautizo.id}"></td>
+                        <td th:text="${bautizo.nombreBautizado + ' ' + bautizo.apellidoBautizado}"></td>
+                        
+                        <td th:text="${bautizo.fechaBautizo}"></td>
+                        
+                        <td>
+                            <small th:text="${bautizo.nombrePadre} + ' y ' + ${bautizo.nombreMadre}"></small>
+                        </td>
+                        <td>
+                            <small th:text="'L:' + (${bautizo.libro}?:'-') + ' F:' + (${bautizo.folio}?:'-')"></small>
+                        </td>
+                        
+                        <td class="text-center">
+                            <a th:href="@{/bautizo/{id}/pdf(id=${bautizo.id})}" class="btn btn-danger btn-sm" title="PDF">
+                                <i class="bi bi-file-pdf"></i>
+                            </a>
+                            <a th:href="@{/bautizo/editar/{id}(id=${bautizo.id})}" class="btn btn-warning btn-sm" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
 
 </body>
 </html>

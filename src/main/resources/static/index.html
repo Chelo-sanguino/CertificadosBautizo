@@ -5,215 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Certificados</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        #form-bautizo { 
-            background-color: #f8f9fa;
-            padding: 30px;
-            margin: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        #form-titulo {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
-
-        input {
-            width: calc(50% - 10px);
-            padding: 12px;
-            margin: 5px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        button {
-            padding: 12px 25px;
-            margin: 10px 5px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn-guardar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-cancelar {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-editar {
-            background: #ffc107;
-            color: #333;
-            padding: 8px 15px;
-        }
-
-        .btn-eliminar {
-            background: #dc3545;
-            color: white;
-            padding: 8px 15px;
-        }
-
-        .btn-pdf {
-            background: #28a745;
-            color: white;
-            padding: 8px 15px;
-        }
-
-        .table-container {
-            padding: 30px;
-            overflow-x: auto;
-        }
-
-        table { 
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        .acciones {
-            white-space: nowrap;
-        }
-
-        .acciones button {
-            margin: 2px;
-        }
-
-        h2 {
-            color: #667eea;
-            padding: 0 30px;
-            margin-top: 20px;
-        }
-
-        @media (max-width: 768px) {
-            input {
-                width: 100%;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        #form-bautizo { background-color: #f8f9fa; padding: 30px; margin: 30px; border-radius: 10px; }
+        input, textarea { width: calc(50% - 10px); padding: 12px; margin: 5px; border: 2px solid #e0e0e0; border-radius: 5px; }
+        textarea { width: calc(100% - 10px); resize: vertical; }
+        .search-bar { padding: 0 30px; display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-input { width: 100%; }
+        button { padding: 12px 25px; margin: 10px 5px; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; }
+        .btn-guardar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .btn-buscar { background: #667eea; }
+        .btn-pdf { background: #28a745; }
+        .btn-editar { background: #ffc107; color: #333; }
+        .btn-eliminar { background: #dc3545; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; }
+        td { padding: 12px 15px; border-bottom: 1px solid #e0e0e0; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <h1>⛪ Gestión de Certificados de Bautizo</h1>
-            <p class="subtitle">Sistema de Registro Parroquial</p>
+            <h1>⛪ Gestión de Certificados</h1>
+            <p>Sistema Parroquial</p>
         </header>
 
         <div id="form-bautizo">
-            <h3 id="form-titulo">📝 Registrar Nuevo Bautizo</h3>
+            <h3 id="form-titulo" style="color:#667eea; margin-bottom:15px;">📝 Nuevo Registro</h3>
             <input type="hidden" id="bautizo-id">
             
-            <input type="text" id="nombreBautizado" placeholder="Nombre del Bautizado">
-            <input type="text" id="apellidoBautizado" placeholder="Apellido del Bautizado">
-            <br>
-            <input type="text" id="nombrePadre" placeholder="Nombre del Padre">
-            <input type="text" id="nombreMadre" placeholder="Nombre de la Madre">
-            <br>
-            <input type="text" id="nombrePadrino" placeholder="Nombre del Padrino">
-            <input type="text" id="nombreMadrina" placeholder="Nombre de la Madrina">
+            <input type="text" id="ci" placeholder="C.I. / Documento de Identidad (Obligatorio)" style="background-color: #fffde7; border-color: #ffeb3b; font-weight: bold;">
             <br>
             
-            <button class="btn-guardar" onclick="guardarBautizo()">💾 Guardar</button>
-            <button class="btn-cancelar" onclick="limpiarFormulario()" style="display:none;" id="btn-cancelar">❌ Cancelar Edición</button>
+            <input type="text" id="nombreBautizado" placeholder="Nombre Bautizado">
+            <input type="text" id="apellidoBautizado" placeholder="Apellido Bautizado">
+            <input type="date" id="fechaBautizo" title="Fecha de Bautizo">
+            <br>
+            <input type="text" id="nombrePadre" placeholder="Nombre Padre">
+            <input type="text" id="nombreMadre" placeholder="Nombre Madre">
+            <br>
+            <input type="text" id="nombrePadrino" placeholder="Nombre Padrino">
+            <input type="text" id="nombreMadrina" placeholder="Nombre Madrina">
+            <br>
+            <textarea id="observaciones" rows="2" placeholder="Observaciones..."></textarea>
+            
+            <div style="margin-top: 15px;">
+                <button class="btn-guardar" onclick="guardarBautizo()">💾 Guardar</button>
+                <button class="btn-cancelar" onclick="limpiarFormulario()" style="display:none; background:#6c757d;" id="btn-cancelar">❌ Cancelar</button>
+            </div>
         </div>
 
-        <h2>📋 Lista de Registros</h2>
+        <h2 style="padding: 0 30px; color: #667eea;">📋 Lista de Registros</h2>
+
+        <div class="search-bar">
+            <input type="text" id="buscador" class="search-input" placeholder="Buscar por nombre o apellido..." onkeyup="if(event.key === 'Enter') cargarBautizos()">
+            <button class="btn-buscar" onclick="cargarBautizos()">🔍 Buscar</button>
+        </div>
         
-        <div class="table-container">
+        <div style="padding: 0 30px 30px 30px; overflow-x: auto;">
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nombre Completo</th>
-                        <th>Padre</th>
-                        <th>Madre</th>
+                        <th>Documento (CI)</th>
+                        <th>Bautizado</th>
+                        <th>Fecha</th>
+                        <th>Padres</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-bautizos-body">
-                </tbody>
+                <tbody id="tabla-bautizos-body"></tbody>
             </table>
         </div>
     </div>
@@ -221,152 +86,112 @@
     <script>
         const API_URL = 'http://localhost:8080/api/bautizos';
 
-        window.onload = function() {
-            cargarBautizos();
-        };
+        window.onload = cargarBautizos;
 
         async function cargarBautizos() {
+            const busqueda = document.getElementById('buscador').value;
+            let url = API_URL;
+            if(busqueda) {
+                url += `?buscar=${encodeURIComponent(busqueda)}`;
+            }
+
             try {
-                const response = await fetch(API_URL);
+                const response = await fetch(url);
                 const bautizos = await response.json();
-                
                 const tbody = document.getElementById('tabla-bautizos-body');
                 tbody.innerHTML = '';
 
-                bautizos.forEach(bautizo => {
-                    const fila = `
+                bautizos.forEach(b => {
+                    tbody.innerHTML += `
                         <tr>
-                            <td>${bautizo.id}</td>
-                            <td>${bautizo.nombreBautizado} ${bautizo.apellidoBautizado}</td>
-                            <td>${bautizo.nombrePadre}</td>
-                            <td>${bautizo.nombreMadre}</td>
-                            <td class="acciones">
-                                <button class="btn-pdf" onclick="descargarPdf(${bautizo.id}, '${bautizo.nombreBautizado}', '${bautizo.apellidoBautizado}')">📄 PDF</button>
-                                <button class="btn-editar" onclick="cargarDatosParaEditar(${bautizo.id})">✏️ Editar</button>
-                                <button class="btn-eliminar" onclick="eliminarBautizo(${bautizo.id})">🗑️ Eliminar</button>
+                            <td>${b.id}</td>
+                            <td><strong>${b.ci || 'S/N'}</strong></td>
+                            <td>${b.nombreBautizado} ${b.apellidoBautizado}</td>
+                            <td>${b.fechaBautizo || '-'}</td>
+                            <td><small>${b.nombrePadre || ''} y ${b.nombreMadre || ''}</small></td>
+                            <td style="white-space:nowrap;">
+                                <button class="btn-pdf" onclick="descargarPdf(${b.id})">📄</button>
+                                <button class="btn-editar" onclick="editar(${b.id})">✏️</button>
+                                <button class="btn-eliminar" onclick="eliminar(${b.id})">🗑️</button>
                             </td>
                         </tr>
                     `;
-                    tbody.innerHTML += fila;
                 });
-            } catch (error) {
-                console.error('Error al cargar bautizos:', error);
-                alert('Error al cargar los registros');
-            }
-        }
-
-        // NUEVA FUNCIÓN: Descargar PDF
-        function descargarPdf(id, nombre, apellido) {
-            window.location.href = `${API_URL}/${id}/pdf`;
+            } catch (e) { console.error(e); }
         }
 
         async function guardarBautizo() {
             const id = document.getElementById('bautizo-id').value;
-            
             const datos = {
+                ci: document.getElementById('ci').value,
                 nombreBautizado: document.getElementById('nombreBautizado').value,
                 apellidoBautizado: document.getElementById('apellidoBautizado').value,
+                fechaBautizo: document.getElementById('fechaBautizo').value,
                 nombrePadre: document.getElementById('nombrePadre').value,
                 nombreMadre: document.getElementById('nombreMadre').value,
                 nombrePadrino: document.getElementById('nombrePadrino').value,
-                nombreMadrina: document.getElementById('nombreMadrina').value
+                nombreMadrina: document.getElementById('nombreMadrina').value,
+                observaciones: document.getElementById('observaciones').value
             };
 
-            // Validación simple
-            if (!datos.nombreBautizado || !datos.apellidoBautizado) {
-                alert('Por favor, completa al menos el nombre y apellido del bautizado');
+            if (!datos.ci || !datos.nombreBautizado || !datos.apellidoBautizado) {
+                alert('⚠️ El CI, Nombre y Apellido son obligatorios');
                 return;
             }
 
+            let url = API_URL;
+            let metodo = 'POST';
+            if (id) { url += `/${id}`; metodo = 'PUT'; }
+
             try {
-                let url = API_URL;
-                let metodo = 'POST';
-
-                if (id) {
-                    url = `${API_URL}/${id}`;
-                    metodo = 'PUT';
-                }
-
                 const response = await fetch(url, {
                     method: metodo,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
                 });
 
                 if (response.ok) {
+                    alert('✅ Guardado con éxito');
                     limpiarFormulario();
                     cargarBautizos();
-                    alert('✅ Registro guardado exitosamente');
                 } else {
-                    console.error('Error al guardar:', await response.text());
-                    alert('❌ Error al guardar el registro');
+                    const mensaje = await response.text();
+                    alert(mensaje); 
                 }
-            } catch (error) {
-                console.error('Error en la conexión:', error);
-                alert('❌ Error de conexión con el servidor');
+            } catch (e) { alert('❌ Error de conexión'); }
+        }
+
+        async function editar(id) {
+            const res = await fetch(`${API_URL}/${id}`);
+            const b = await res.json();
+            document.getElementById('bautizo-id').value = b.id;
+            document.getElementById('ci').value = b.ci || '';
+            document.getElementById('nombreBautizado').value = b.nombreBautizado;
+            document.getElementById('apellidoBautizado').value = b.apellidoBautizado;
+            document.getElementById('fechaBautizo').value = b.fechaBautizo;
+            document.getElementById('nombrePadre').value = b.nombrePadre;
+            document.getElementById('nombreMadre').value = b.nombreMadre;
+            document.getElementById('nombrePadrino').value = b.nombrePadrino;
+            document.getElementById('nombreMadrina').value = b.nombreMadrina;
+            document.getElementById('observaciones').value = b.observaciones || '';
+            
+            document.getElementById('form-titulo').innerText = `✏️ Editando ID: ${b.id}`;
+            document.getElementById('btn-cancelar').style.display = 'inline-block';
+            window.scrollTo(0,0);
+        }
+
+        async function eliminar(id) {
+            if(confirm('¿Eliminar registro?')) {
+                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                cargarBautizos();
             }
         }
 
-        async function cargarDatosParaEditar(id) {
-            try {
-                const response = await fetch(`${API_URL}/${id}`);
-                const bautizo = await response.json();
-
-                document.getElementById('bautizo-id').value = bautizo.id;
-                document.getElementById('nombreBautizado').value = bautizo.nombreBautizado;
-                document.getElementById('apellidoBautizado').value = bautizo.apellidoBautizado;
-                document.getElementById('nombrePadre').value = bautizo.nombrePadre;
-                document.getElementById('nombreMadre').value = bautizo.nombreMadre;
-                document.getElementById('nombrePadrino').value = bautizo.nombrePadrino;
-                document.getElementById('nombreMadrina').value = bautizo.nombreMadrina;
-
-                document.getElementById('form-titulo').innerText = `✏️ Editando Bautizo ID: ${bautizo.id}`;
-                document.getElementById('btn-cancelar').style.display = 'inline';
-
-                // Scroll al formulario
-                document.getElementById('form-bautizo').scrollIntoView({ behavior: 'smooth' });
-
-            } catch (error) {
-                console.error('Error al cargar datos para editar:', error);
-                alert('❌ Error al cargar los datos');
-            }
-        }
-
-        async function eliminarBautizo(id) {
-            if (!confirm(`¿Estás seguro de que quieres eliminar el registro ID: ${id}?`)) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/${id}`, {
-                    method: 'DELETE'
-                });
-
-                if (response.ok) {
-                    cargarBautizos();
-                    alert('✅ Registro eliminado exitosamente');
-                } else {
-                    console.error('Error al eliminar:', await response.text());
-                    alert('❌ Error al eliminar el registro');
-                }
-            } catch (error) {
-                console.error('Error en la conexión:', error);
-                alert('❌ Error de conexión con el servidor');
-            }
-        }
+        function descargarPdf(id) { window.location.href = `${API_URL}/${id}/pdf`; }
 
         function limpiarFormulario() {
-            document.getElementById('bautizo-id').value = '';
-            document.getElementById('nombreBautizado').value = '';
-            document.getElementById('apellidoBautizado').value = '';
-            document.getElementById('nombrePadre').value = '';
-            document.getElementById('nombreMadre').value = '';
-            document.getElementById('nombrePadrino').value = '';
-            document.getElementById('nombreMadrina').value = '';
-
-            document.getElementById('form-titulo').innerText = '📝 Registrar Nuevo Bautizo';
+            document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+            document.getElementById('form-titulo').innerText = '📝 Nuevo Registro';
             document.getElementById('btn-cancelar').style.display = 'none';
         }
     </script>
