@@ -15,248 +15,201 @@ public class PdfService {
 
     public byte[] generarCertificadoBautizo(Bautizo bautizo) {
         try {
-            // Crear documento PDF en orientación horizontal
+            // 1. Configuración de página (Horizontal A4) y márgenes
             Document document = new Document(PageSize.A4.rotate(), 40, 40, 35, 35);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter writer = PdfWriter.getInstance(document, baos);
 
             document.open();
-
-            // Obtener el contenido del PDF para dibujar bordes y decoraciones
             PdfContentByte canvas = writer.getDirectContent();
 
-            // ===== DIBUJAR BORDES DECORATIVOS =====
+            // 2. Dibujar Marcos Decorativos
             dibujarBordesDecorativo(canvas, document);
 
-            // ===== CONFIGURAR FUENTES (tamaños reducidos) =====
-            Font tituloFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 26, Font.BOLD, new BaseColor(40, 40, 90));
-            Font subtituloFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11, Font.ITALIC, BaseColor.DARK_GRAY);
-            Font nombreFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 22, Font.BOLD, new BaseColor(139, 0, 0));
-            Font textoFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.NORMAL, BaseColor.BLACK);
-            Font textoNegrita = FontFactory.getFont(FontFactory.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-            Font textoItalica = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.ITALIC, BaseColor.DARK_GRAY);
-            Font firmaFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 9, Font.NORMAL, BaseColor.BLACK);
-            Font ornamentoFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, Font.NORMAL, new BaseColor(139, 0, 0));
+            // 3. Fuentes Personalizadas
+            // Titulos grandes y elegantes
+            Font tituloFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 28, new BaseColor(40, 40, 90)); 
+            // Texto normal
+            Font textoFont = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
+            // Texto destacado (Nombres)
+            Font nombreFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 24, Font.BOLD, new BaseColor(139, 0, 0)); // Rojo oscuro elegante
+            // Etiquetas (ej: "Padres:")
+            Font etiquetaFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.DARK_GRAY);
+            // Firmas
+            Font firmaFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.ITALIC, BaseColor.BLACK);
+            // Ornamentos
+            Font ornamentoFont = FontFactory.getFont(FontFactory.ZAPFDINGBATS, 14, new BaseColor(139, 0, 0));
 
-            // ===== ESPACIADO SUPERIOR =====
-            document.add(new Paragraph(" ", FontFactory.getFont(FontFactory.TIMES_ROMAN, 8)));
+            // --- INICIO DEL CONTENIDO ---
+            
+            document.add(new Paragraph(" ", FontFactory.getFont(FontFactory.HELVETICA, 10))); // Espacio inicial
 
-            // ===== ORNAMENTO SUPERIOR =====
-            Paragraph ornamentoSuperior = new Paragraph("❊ ✦ ❊", ornamentoFont);
-            ornamentoSuperior.setAlignment(Element.ALIGN_CENTER);
-            ornamentoSuperior.setSpacingAfter(5);
-            document.add(ornamentoSuperior);
+            // Ornamento Superior
+            Paragraph ornamento = new Paragraph("❊", ornamentoFont);
+            ornamento.setAlignment(Element.ALIGN_CENTER);
+            ornamento.setSpacingAfter(10);
+            document.add(ornamento);
 
-            // ===== TÍTULO =====
+            // TÍTULO PRINCIPAL
             Paragraph titulo = new Paragraph("CERTIFICADO DE BAUTISMO", tituloFont);
             titulo.setAlignment(Element.ALIGN_CENTER);
-            titulo.setSpacingAfter(3);
+            titulo.setSpacingAfter(5);
             document.add(titulo);
 
-            // ===== SUBTÍTULO =====
-            Paragraph subtitulo = new Paragraph("CERTIFICATE OF BAPTISM", subtituloFont);
+            // Subtítulo solemne
+            Paragraph subtitulo = new Paragraph("Que el agua del bautismo sea la base de una vida de fe y compasión", 
+                FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 12, BaseColor.GRAY));
             subtitulo.setAlignment(Element.ALIGN_CENTER);
-            subtitulo.setSpacingAfter(8);
+            subtitulo.setSpacingAfter(25);
             document.add(subtitulo);
 
-            // ===== ORNAMENTO INFERIOR DEL TÍTULO =====
-            Paragraph ornamentoInferior = new Paragraph("❊ ✦ ❊", ornamentoFont);
-            ornamentoInferior.setAlignment(Element.ALIGN_CENTER);
-            ornamentoInferior.setSpacingAfter(12);
-            document.add(ornamentoInferior);
+            // Cuerpo del certificado
+            Paragraph certifica = new Paragraph("Se certifica que:", textoFont);
+            certifica.setAlignment(Element.ALIGN_CENTER);
+            certifica.setSpacingAfter(10);
+            document.add(certifica);
 
-            // ===== TEXTO INTRODUCTORIO =====
-            Paragraph intro = new Paragraph("In obedience to the command of our Lord Jesus Christ", textoItalica);
-            intro.setAlignment(Element.ALIGN_CENTER);
-            intro.setSpacingAfter(12);
-            document.add(intro);
-
-            // ===== NOMBRE DEL BAUTIZADO =====
+            // NOMBRE DEL BAUTIZADO (Grande y destacado)
             Paragraph nombreCompleto = new Paragraph(
-                bautizo.getNombreBautizado() + " " + bautizo.getApellidoBautizado(), 
+                bautizo.getNombreBautizado().toUpperCase() + " " + bautizo.getApellidoBautizado().toUpperCase(), 
                 nombreFont
             );
             nombreCompleto.setAlignment(Element.ALIGN_CENTER);
-            nombreCompleto.setSpacingAfter(2);
+            nombreCompleto.setSpacingAfter(5);
             document.add(nombreCompleto);
+            
+            // Línea divisoria
+            Paragraph linea = new Paragraph("_____________________________________________", textoFont);
+            linea.setAlignment(Element.ALIGN_CENTER);
+            linea.setSpacingAfter(20);
+            document.add(linea);
 
-            // Línea decorativa bajo el nombre
-            Paragraph lineaNombre = new Paragraph("_________________________________________", textoFont);
-            lineaNombre.setAlignment(Element.ALIGN_CENTER);
-            lineaNombre.setSpacingAfter(12);
-            document.add(lineaNombre);
+            // Texto central
+            Paragraph textoCentral = new Paragraph("Recibió el Santo Sacramento del Bautismo", textoFont);
+            textoCentral.setAlignment(Element.ALIGN_CENTER);
+            textoCentral.setSpacingAfter(20);
+            document.add(textoCentral);
 
-            // ===== TEXTO "WAS BAPTIZED" =====
-            Paragraph wasBaptized = new Paragraph("was Baptized", textoFont);
-            wasBaptized.setAlignment(Element.ALIGN_CENTER);
-            wasBaptized.setSpacingAfter(15);
-            document.add(wasBaptized);
-
-            // ===== INFORMACIÓN DE LUGAR Y FECHA =====
+            // TABLA DE LUGAR Y FECHA (Para alinear bonito)
             PdfPTable tablaInfo = new PdfPTable(2);
-            tablaInfo.setWidthPercentage(70);
+            tablaInfo.setWidthPercentage(80);
             tablaInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
-            tablaInfo.setSpacingAfter(15);
-
-            // Celda "at"
-            PdfPCell celdaAt = new PdfPCell();
-            celdaAt.setBorder(Rectangle.NO_BORDER);
-            Paragraph pAt = new Paragraph();
-            pAt.add(new Chunk("at  ", textoFont));
-            pAt.add(new Chunk("Parroquia Santa María", textoNegrita));
-            pAt.add(new Chunk("\n__________________________", textoFont));
-            pAt.setAlignment(Element.ALIGN_CENTER);
-            celdaAt.addElement(pAt);
-            celdaAt.setPaddingBottom(5);
-
-            // Celda "on"
-            PdfPCell celdaOn = new PdfPCell();
-            celdaOn.setBorder(Rectangle.NO_BORDER);
             
-            // Obtener fecha actual formateada
-            LocalDate fechaActual = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", new Locale("es", "ES"));
-            String fechaFormateada = fechaActual.format(formatter);
+            // Lugar
+            PdfPCell celdaLugar = new PdfPCell();
+            celdaLugar.setBorder(Rectangle.NO_BORDER);
+            celdaLugar.setHorizontalAlignment(Element.ALIGN_CENTER);
+            celdaLugar.addElement(new Paragraph("En la Parroquia:", etiquetaFont));
+            celdaLugar.addElement(new Paragraph("Perpetuo Socorro", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14)));
             
-            Paragraph pOn = new Paragraph();
-            pOn.add(new Chunk("on  ", textoFont));
-            pOn.add(new Chunk(fechaFormateada, textoNegrita));
-            pOn.add(new Chunk("\n__________________________", textoFont));
-            pOn.setAlignment(Element.ALIGN_CENTER);
-            celdaOn.addElement(pOn);
-            celdaOn.setPaddingBottom(5);
+            // Fecha (Formateada en español)
+            LocalDate fecha = bautizo.getFechaBautizo() != null ? bautizo.getFechaBautizo() : LocalDate.now();
+            String fechaStr = fecha.format(DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "ES")));
+            
+            PdfPCell celdaFecha = new PdfPCell();
+            celdaFecha.setBorder(Rectangle.NO_BORDER);
+            celdaFecha.setHorizontalAlignment(Element.ALIGN_CENTER);
+            celdaFecha.addElement(new Paragraph("Fecha del Bautizo:", etiquetaFont));
+            celdaFecha.addElement(new Paragraph(fechaStr, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14)));
 
-            tablaInfo.addCell(celdaAt);
-            tablaInfo.addCell(celdaOn);
+            tablaInfo.addCell(celdaLugar);
+            tablaInfo.addCell(celdaFecha);
             document.add(tablaInfo);
 
-            // ===== INFORMACIÓN DE PADRES Y PADRINOS =====
-            PdfPTable tablaFamilia = new PdfPTable(2);
-            tablaFamilia.setWidthPercentage(75);
-            tablaFamilia.setHorizontalAlignment(Element.ALIGN_CENTER);
-            tablaFamilia.setSpacingAfter(18);
+            // Espacio
+            document.add(new Paragraph("\n", textoFont));
 
-            // Padres
+            // TABLA DE PADRES Y PADRINOS
+            PdfPTable tablaFamilia = new PdfPTable(2);
+            tablaFamilia.setWidthPercentage(90);
+            tablaFamilia.setSpacingBefore(10);
+            
+            // Celda Padres
             PdfPCell celdaPadres = new PdfPCell();
             celdaPadres.setBorder(Rectangle.NO_BORDER);
-            Paragraph pPadres = new Paragraph();
-            pPadres.add(new Chunk("Padres / Parents\n", textoNegrita));
-            pPadres.add(new Chunk("Padre: ", textoFont));
-            pPadres.add(new Chunk(bautizo.getNombrePadre() + "\n", textoItalica));
-            pPadres.add(new Chunk("Madre: ", textoFont));
-            pPadres.add(new Chunk(bautizo.getNombreMadre(), textoItalica));
-            pPadres.setAlignment(Element.ALIGN_LEFT);
-            celdaPadres.addElement(pPadres);
-            celdaPadres.setPadding(8);
+            celdaPadres.setPadding(10);
+            celdaPadres.addElement(new Paragraph("PADRES", etiquetaFont));
+            celdaPadres.addElement(new Paragraph(bautizo.getNombrePadre(), textoFont));
+            celdaPadres.addElement(new Paragraph(bautizo.getNombreMadre(), textoFont));
 
-            // Padrinos
+            // Celda Padrinos
             PdfPCell celdaPadrinos = new PdfPCell();
             celdaPadrinos.setBorder(Rectangle.NO_BORDER);
-            Paragraph pPadrinos = new Paragraph();
-            pPadrinos.add(new Chunk("Padrinos / Godparents\n", textoNegrita));
-            pPadrinos.add(new Chunk("Padrino: ", textoFont));
-            pPadrinos.add(new Chunk(bautizo.getNombrePadrino() + "\n", textoItalica));
-            pPadrinos.add(new Chunk("Madrina: ", textoFont));
-            pPadrinos.add(new Chunk(bautizo.getNombreMadrina(), textoItalica));
-            pPadrinos.setAlignment(Element.ALIGN_LEFT);
-            celdaPadrinos.addElement(pPadrinos);
-            celdaPadrinos.setPadding(8);
+            celdaPadrinos.setPadding(10);
+            celdaPadrinos.addElement(new Paragraph("PADRINOS", etiquetaFont));
+            celdaPadrinos.addElement(new Paragraph(bautizo.getNombrePadrino(), textoFont));
+            celdaPadrinos.addElement(new Paragraph(bautizo.getNombreMadrina(), textoFont));
 
             tablaFamilia.addCell(celdaPadres);
             tablaFamilia.addCell(celdaPadrinos);
             document.add(tablaFamilia);
 
-            // ===== FIRMAS =====
+            // Espacio final antes de firmas
+            document.add(new Paragraph("\n\n\n", textoFont));
+
+            // FIRMAS
             PdfPTable tablaFirmas = new PdfPTable(2);
-            tablaFirmas.setWidthPercentage(65);
+            tablaFirmas.setWidthPercentage(80); // Ocupa el 80% del ancho de la página
             tablaFirmas.setHorizontalAlignment(Element.ALIGN_CENTER);
-            tablaFirmas.setSpacingBefore(10);
+            
+            // Forzamos que las columnas tengan el mismo ancho (50% y 50%)
+            tablaFirmas.setWidths(new float[]{1, 1});
 
-            // Firma Sacerdote
-            PdfPCell celdaSacerdote = new PdfPCell();
-            celdaSacerdote.setBorder(Rectangle.NO_BORDER);
-            Paragraph pSacerdote = new Paragraph();
-            pSacerdote.add(new Chunk("\n\n__________________________\n", firmaFont));
-            pSacerdote.add(new Chunk("Pastor Signature", firmaFont));
-            pSacerdote.setAlignment(Element.ALIGN_CENTER);
-            celdaSacerdote.addElement(pSacerdote);
+            // --- Firma 1: Pastor ---
+            PdfPCell firma1 = new PdfPCell();
+            firma1.setBorder(Rectangle.NO_BORDER);
+            firma1.setHorizontalAlignment(Element.ALIGN_CENTER); // Centra el contenido en la celda
+            firma1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            
+            // Usamos Paragraph para la línea y el texto, asegurando alineación
+            Paragraph lineaFirma1 = new Paragraph("__________________________", textoFont);
+            lineaFirma1.setAlignment(Element.ALIGN_CENTER);
+            firma1.addElement(lineaFirma1);
+            
+            Paragraph textoFirma1 = new Paragraph("Firma del Pastor", firmaFont);
+            textoFirma1.setAlignment(Element.ALIGN_CENTER);
+            firma1.addElement(textoFirma1);
 
-            // Firma Secretario
-            PdfPCell celdaSecretario = new PdfPCell();
-            celdaSecretario.setBorder(Rectangle.NO_BORDER);
-            Paragraph pSecretario = new Paragraph();
-            pSecretario.add(new Chunk("\n\n__________________________\n", firmaFont));
-            pSecretario.add(new Chunk("Secretary", firmaFont));
-            pSecretario.setAlignment(Element.ALIGN_CENTER);
-            celdaSecretario.addElement(pSecretario);
+            // --- Firma 2: Secretario/a ---
+            PdfPCell firma2 = new PdfPCell();
+            firma2.setBorder(Rectangle.NO_BORDER);
+            firma2.setHorizontalAlignment(Element.ALIGN_CENTER);
+            firma2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            
+            Paragraph lineaFirma2 = new Paragraph("__________________________", textoFont);
+            lineaFirma2.setAlignment(Element.ALIGN_CENTER);
+            firma2.addElement(lineaFirma2);
+            
+            Paragraph textoFirma2 = new Paragraph("Secretario(a)", firmaFont);
+            textoFirma2.setAlignment(Element.ALIGN_CENTER);
+            firma2.addElement(textoFirma2);
 
-            tablaFirmas.addCell(celdaSacerdote);
-            tablaFirmas.addCell(celdaSecretario);
+            tablaFirmas.addCell(firma1);
+            tablaFirmas.addCell(firma2);
             document.add(tablaFirmas);
 
-            // Cerrar documento
             document.close();
-
             return baos.toByteArray();
 
-        } catch (DocumentException e) {
-            throw new RuntimeException("Error al generar el PDF: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar PDF", e);
         }
     }
 
-    // Método para dibujar bordes decorativos
+    // Método para el borde (se mantiene igual, es un buen estilo)
     private void dibujarBordesDecorativo(PdfContentByte canvas, Document document) {
-        float pageWidth = document.getPageSize().getWidth();
-        float pageHeight = document.getPageSize().getHeight();
-        float margen = 30;
+        float width = document.getPageSize().getWidth();
+        float height = document.getPageSize().getHeight();
+        float margin = 20;
 
-        // Configurar color y grosor del borde
         canvas.setColorStroke(new BaseColor(40, 40, 90));
-        canvas.setLineWidth(2f);
-
-        // Borde exterior
-        canvas.rectangle(margen, margen, pageWidth - 2 * margen, pageHeight - 2 * margen);
+        canvas.setLineWidth(3);
+        canvas.rectangle(margin, margin, width - 2*margin, height - 2*margin);
         canvas.stroke();
-
-        // Borde interior (más delgado)
-        canvas.setLineWidth(1f);
-        float margenInterior = margen + 8;
-        canvas.rectangle(margenInterior, margenInterior, 
-                        pageWidth - 2 * margenInterior, 
-                        pageHeight - 2 * margenInterior);
-        canvas.stroke();
-
-        // Decoraciones en las esquinas
-        dibujarEsquinasDecorativas(canvas, margen, pageWidth, pageHeight);
-    }
-
-    // Método para dibujar decoraciones en las esquinas
-    private void dibujarEsquinasDecorativas(PdfContentByte canvas, float margen, float pageWidth, float pageHeight) {
-        float tamañoDecoracion = 20;
-        canvas.setLineWidth(1.5f);
-
-        // Esquina superior izquierda
-        canvas.moveTo(margen + 15, margen + tamañoDecoracion + 15);
-        canvas.lineTo(margen + 15, margen + 15);
-        canvas.lineTo(margen + tamañoDecoracion + 15, margen + 15);
-        canvas.stroke();
-
-        // Esquina superior derecha
-        canvas.moveTo(pageWidth - margen - 15, margen + tamañoDecoracion + 15);
-        canvas.lineTo(pageWidth - margen - 15, margen + 15);
-        canvas.lineTo(pageWidth - margen - tamañoDecoracion - 15, margen + 15);
-        canvas.stroke();
-
-        // Esquina inferior izquierda
-        canvas.moveTo(margen + 15, pageHeight - margen - tamañoDecoracion - 15);
-        canvas.lineTo(margen + 15, pageHeight - margen - 15);
-        canvas.lineTo(margen + tamañoDecoracion + 15, pageHeight - margen - 15);
-        canvas.stroke();
-
-        // Esquina inferior derecha
-        canvas.moveTo(pageWidth - margen - 15, pageHeight - margen - tamañoDecoracion - 15);
-        canvas.lineTo(pageWidth - margen - 15, pageHeight - margen - 15);
-        canvas.lineTo(pageWidth - margen - tamañoDecoracion - 15, pageHeight - margen - 15);
+        
+        // Borde interno fino
+        canvas.setLineWidth(1);
+        canvas.rectangle(margin + 5, margin + 5, width - 2*margin - 10, height - 2*margin - 10);
         canvas.stroke();
     }
 }

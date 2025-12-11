@@ -6,9 +6,11 @@ import java.util.List;
 
 public interface BautizoRepository extends JpaRepository<Bautizo, Long> {
 
-    // Buscador por nombre (Para la barra de búsqueda)
-    List<Bautizo> findByNombreBautizadoContainingIgnoreCaseOrApellidoBautizadoContainingIgnoreCase(String nombre, String apellido);
+    // BÚSQUEDA MEJORADA: Busca coincidencia en Nombre, Apellido O CI
+    List<Bautizo> findByNombreBautizadoContainingIgnoreCaseOrApellidoBautizadoContainingIgnoreCaseOrCiContainingIgnoreCase(
+        String nombre, String apellido, String ci
+    );
 
-    // NUEVA VALIDACIÓN: Verificar si existe el CI
+    // Validación de CI único
     boolean existsByCi(String ci);
 }

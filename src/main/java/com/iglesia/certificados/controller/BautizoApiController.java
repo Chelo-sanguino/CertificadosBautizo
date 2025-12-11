@@ -24,11 +24,14 @@ public class BautizoApiController {
     @Autowired
     private PdfService pdfService;
 
-    // --- R - READ (Con Buscador) ---
+    // --- R - READ (Con Buscador Mejorado: Nombre, Apellido o CI) ---
     @GetMapping
     public List<Bautizo> obtenerBautizos(@RequestParam(required = false) String buscar) {
         if (buscar != null && !buscar.isEmpty()) {
-            return bautizoRepository.findByNombreBautizadoContainingIgnoreCaseOrApellidoBautizadoContainingIgnoreCase(buscar, buscar);
+            // Buscamos el mismo texto en los 3 campos posibles
+            return bautizoRepository.findByNombreBautizadoContainingIgnoreCaseOrApellidoBautizadoContainingIgnoreCaseOrCiContainingIgnoreCase(
+                buscar, buscar, buscar
+            );
         }
         return bautizoRepository.findAll();
     }
